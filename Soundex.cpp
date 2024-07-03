@@ -1,18 +1,26 @@
 #include "Soundex.h"
 #include <cctype>
+#include <unordered_map>
 
-char getSoundexCode(char c) {
-    c = toupper(c);
-    switch (c) {
-        case 'B': case 'F': case 'P': case 'V': return '1';
-        case 'C': case 'G': case 'J': case 'K': case 'Q': case 'S': case 'X': case 'Z': return '2';
-        case 'D': case 'T': return '3';
-        case 'L': return '4';
-        case 'M': case 'N': return '5';
-        case 'R': return '6';
-        default: return '0'; // For A, E, I, O, U, H, W, Y
+char getSoundexCode(const char c) {
+    static std::unordered_map<char, char> consonantMap = 
+    {
+        {'b', '1'}, {'f', '1'}, {'p', '1'}, {'v', '1'},
+        {'c', '2'}, {'g', '2'}, {'j', '2'}, {'k', '2'},
+        {'q', '2'}, {'s', '2'}, {'x', '2'}, {'z', '2'},
+        {'d', '3'}, {'t', '3'},
+        {'l', '4'},
+        {'m', '5'}, {'n', '5'},
+        {'r', '6'}
+    };
+
+    c = std::tolower(c);
+    if (consonantMap.find(c) != consonantMap.end()) {
+        return consonantMap[c];
     }
+    return '0'; // For vowels and other characters
 }
+
 bool isFirstTwoLettersSame(const std::string& name)
 {
     if(name.length() < 2)
