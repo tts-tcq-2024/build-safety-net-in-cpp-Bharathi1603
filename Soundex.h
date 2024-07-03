@@ -3,6 +3,6 @@
 
 #include <string>
 
-std::string generateSoundex(const std::string& name);
+std::string generateSoundex(std::string name);
 
 #endif // SOUNDEX_H
