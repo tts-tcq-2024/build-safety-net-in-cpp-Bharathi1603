@@ -134,27 +134,29 @@ void procesValidAndInvalidCharacter(std::string& name, size_t& i, std::string& s
     } 
 }
 
-std::string processCharacter(std::string& name)
+void procesCharacter(std::string& name, size_t& i, std::string& soundex)
+{
+    if(isTwoConsecutiveLettersSame(name, i))
+    {
+       removeCharacterFromString(name, i);
+    }
+    else
+    {
+        procesValidAndInvalidCharacter(name, i, soundex);
+    }
+}
+
+std::string processAllCharacter(std::string& name)
 {
     std::string soundex(1, toupper(name[0]));
-    char prevCode = getSoundexCode(name[0]);
     for (size_t i = 1; i < name.length() && soundex.length() < 4; ++i) 
     {
-        if(isTwoConsecutiveLettersSame(name, i))
-        {
-           removeCharacterFromString(name, i);
-        }
-        else
-        {
-            procesValidAndInvalidCharacter(name, i, soundex);
-        }
+        procesCharacter(name, i, soundex);
     }
     
     soundex.resize(4, '0');
     return soundex;
 }
-
-
 
 std::string generateSoundex(std::string name) {
     if (name.empty()) 
@@ -167,5 +169,5 @@ std::string generateSoundex(std::string name) {
         removeCharacterFromString(name, name[1]);
     }
     
-    return processCharacter(name);
+    return processAllCharacter(name);
 }
