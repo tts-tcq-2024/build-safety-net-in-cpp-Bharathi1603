@@ -116,6 +116,46 @@ void encodeDigitWithVowelAndOtherConsonant(std::string& name, std::size_t& index
     }
 }
 
+void procesValidAndInvalidCharacter(std::string& name, size_t& i, std::string& soundex)
+{
+   char currentCode = getSoundexCode(name[i]);
+   char prevCode;
+    if (isTwoLettersWithSameDigit(name, i))
+    {
+        encodeDigitWithVowelAndOtherConsonant(name, i, soundex, prevCode);
+    }
+    else if(currentCode == '0')
+    {
+        return;
+    }
+    else
+    {
+        encodeDigit(soundex, currentCode, prevCode);
+    } 
+}
+
+std::string processCharacter(std::string& name)
+{
+    std::string soundex(1, toupper(name[0]));
+    char prevCode = getSoundexCode(name[0]);
+    for (size_t i = 1; i < name.length() && soundex.length() < 4; ++i) 
+    {
+        if(isTwoConsecutiveLettersSame(name, i))
+        {
+           removeCharacterFromString(name, i);
+        }
+        else
+        {
+            procesValidAndInvalidCharacter(name, i, soundex);
+        }
+    }
+    
+    soundex.resize(4, '0');
+    return soundex;
+}
+
+
+
 std::string generateSoundex(std::string name) {
     if (name.empty()) 
     {
@@ -127,31 +167,5 @@ std::string generateSoundex(std::string name) {
         removeCharacterFromString(name, name[1]);
     }
     
-    std::string soundex(1, toupper(name[0]));
-    char prevCode = getSoundexCode(name[0]);
-    for (size_t i = 1; i < name.length() && soundex.length() < 4; ++i) 
-    {
-        if(isTwoConsecutiveLettersSame(name, i))
-        {
-           removeCharacterFromString(name, i);
-           continue; 
-        }
-        
-        char currentCode = getSoundexCode(name[i]);
-        if (isTwoLettersWithSameDigit(name, i))
-        {
-            encodeDigitWithVowelAndOtherConsonant(name, i, soundex, prevCode);
-        }
-        else if(currentCode == '0')
-        {
-            continue;
-        }
-        else
-        {
-            encodeDigit(soundex, currentCode, prevCode);
-        }
-    }
-    soundex.resize(4, '0');
-    
-    return soundex;
+    return processCharacter(name);
 }
