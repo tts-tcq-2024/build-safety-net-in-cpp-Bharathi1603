@@ -2,7 +2,7 @@
 #include <cctype>
 #include <unordered_map>
 
-char getSoundexCode(const char c) {
+char getSoundexCode(char c) {
     static std::unordered_map<char, char> consonantMap = 
     {
         {'b', '1'}, {'f', '1'}, {'p', '1'}, {'v', '1'},
